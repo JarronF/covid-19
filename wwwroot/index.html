@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>COVID-19 Graphs</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/index.css">
+  <!--  <link rel="stylesheet" href="css/site.css" /> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    <script src="js/index.js"></script>
+</head>
+
+<body>
+    <h1>COVID-19 Graphs</h1>
+    <div class="modal" tabindex="-1" role="dialog" id="errorModal">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Error</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <h6 id="error" style="color: red;">Error Text</h6>
+            </div>
+            <div class="modal-footer">             
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>    
+
+    <div>
+        <select id="selCountry1" class="selectBox form-control" style="float:left;"></select>
+        <select id="selCountry2" class="selectBox form-control"></select>
+
+        <h3><span id="txtCountry">Country</span> <span id="txtConfirmedCount">Count</span></h3>
+        <canvas id="chart1">
+
+        </canvas>
+    </div>
+</body>
+
+</html>

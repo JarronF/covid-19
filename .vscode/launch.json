@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "chrome",
+        "request": "launch",
+        "name": "Launch Chrome",
+        "url": "file:///C:/Users/Jarron/Documents/Projects/COVID-19/wwwroot/index.html",
+        "webRoot": "${workspaceFolder}"
+      },    
+    ]
+  }
