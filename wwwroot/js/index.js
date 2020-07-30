@@ -1,12 +1,11 @@
-const proxyurl = "https://cors-anywhere.herokuapp.com/";
+const proxyurl = "https://cors-anywhere.herokuapp.com/"; //some apis do not return the correct headers, this prox adds them at a small cost of speed
 const covidBaseUrl = "https://api.covid19api.com";
 const colourBaseUrl = "https://www.colourlovers.com/api";
-
 
 var chart;
 var error = {
     errObj: null,
-    message: "",
+    message: "Unknown error occurred",
     origin: null,
 };
 var sortedCountries = [];
@@ -27,33 +26,32 @@ $(document).ready(function () {
 
     getListAllCountries(function () {
         fillCountrySelect($("#selCountry1"));
-        fillCountrySelect($("#selCountry2"));
+        //Start by displaying South African data
+        getCountryAllStatus("south-africa", drawMultiCountryChart);
+
+        //Commented out because the api has implemented rate-limiting and you have to pay for access
         //getCountryAllStatus("south-africa", function (multiCountry) {
         //    drawChart(multiCountry);
         //});
     });
 
-
     $("#selCountry1").change(function () {
         var countrySlug = $("#selCountry1").val();
-        //getStatusCountByCountry(countrySlug, virusStatus.confirmed, drawChart);
         getCountryAllStatus(countrySlug, drawMultiCountryChart);
-    });
-    $("#selCountry2").change(function () {
-        var countrySlug = $("#selCountry2").val();
-        //getStatusCountByCountry(countrySlug, virusStatus.confirmed, addData);
-        getCountryAllStatus(countrySlug, addData);
     });
 });
 
 function fillColourList() {
+    //Call a colour api to get back a list of colours to be used in the chart
     $.ajax({
         url: proxyurl + colourBaseUrl + "/colors?format=json",
         dataType: "json",
     })
         .done(function (response) {
             $.each(response, function (key, item) {
-                colourList.push("#" + item.hex);
+                if(item.hex != "FFFFFF"){//don't add white as it's too difficult to see 
+                    colourList.push("#" + item.hex);
+                }
             });
         })
         .fail(function (err) {
@@ -115,8 +113,6 @@ function drawChart(multiCountryStatus) {
 }
 
 function drawMultiCountryChart(multiCountryStatus) {
-    //$("#txtCountry").text(countryStatus.name);
-    //$("#txtConfirmedCount").text(countryStatus.latestCount);
     var ctx = $("#chart1");
     //destroy any previous chart data before refilling
     if (chart) chart.destroy();
@@ -145,8 +141,8 @@ function drawMultiCountryChart(multiCountryStatus) {
 }
 
 function getCountryAllStatus(countrySlug, callback) {
+    //Get all virus statuses for a particular country identified by the countrySlug
     var endPoint = covidBaseUrl + "/country/" + countrySlug;
-
     var country = {
         name: "",
         latestCount: 0,
@@ -191,6 +187,7 @@ function getCountryAllStatus(countrySlug, callback) {
 }
 
 function getStatusCountByCountry(cntry, vstatus, callback) {
+    //Get all status counts for a particular country 
     var endPoint = covidBaseUrl + "/country/" + cntry + "/status/" + vstatus;
 
     var cases = [];
@@ -230,6 +227,7 @@ function getStatusCountByCountry(cntry, vstatus, callback) {
 }
 
 function getListAllCountries(callback) {
+    //Get a list of all countries that the api has available
     var endPoint = covidBaseUrl + "/countries";
     $.getJSON(endPoint, function (response) {
         //sort the returned response into a sorted array
@@ -247,7 +245,7 @@ function getListAllCountries(callback) {
         });
 }
 function compareCountry(itemA, itemB) {
-    //compare the country property of each object
+    //compare the country property of each object in order to sort alphabetically
     const countryA = itemA.Country.toUpperCase();
     const countryB = itemB.Country.toUpperCase();
 
@@ -271,7 +269,8 @@ function fillCountrySelect(element) {
 
 function showError() {
     if (error.errObj !== null) {
-        $("#error").html("Error Status: " + error.errObj.status + "<br/>" + error.errObj.responseJSON.message);
+        var errText = (error.errObj.responseJSON.message === null) ? "No returned error" : error.errObj.responseJSON.message; 
+        $("#error").html("Error Status: " + error.errObj.status + "<br/>" + errText);
     } else {
         $("#error").html("Error: <br/>" + error.message);
     }
