@@ -14,35 +14,44 @@
 </head>
 
 <body>
-    <h1>COVID-19 Graphs</h1>
+  <div class="container-fluid">
+    <div class="row">
+    <h1>COVID-19 Graphs</h1> 
+    </div>
+    <div class="row">
+    <div class="col">
+        <select id="selCountry1" class="selectBox form-control"></select>       
+      </div>
+      <div class="col">
+        <button type="button" class="btn btn-primary" id="clear-graph">Clear Graph</button>
+        <button type="button" class="btn btn-info" id="remove-country">Remove Last Country</button>
+      </div>
+      <div class="col">
+        <h3><span id="txtCountry">Country</span> <span id="txtConfirmedCount">Count</span></h3>
+      </div> 
+    </div>  
+    <div class="row"> 
+        <canvas id="chart1"></canvas>
+    </div>
     <div class="modal" tabindex="-1" role="dialog" id="errorModal">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Error</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-                <h6 id="error" style="color: red;">Error Text</h6>
-            </div>
-            <div class="modal-footer">             
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Error</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <h6 id="error" style="color: red;">Error Text</h6>
+          </div>
+          <div class="modal-footer">             
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </div>
-      </div>    
-
-    <div>
-        <select id="selCountry1" class="selectBox form-control"></select>       
-
-        <h3><span id="txtCountry">Country</span> <span id="txtConfirmedCount">Count</span></h3>
-
-        <canvas id="chart1">
-
-        </canvas>
-    </div>
+      </div>
+    </div>  
+  </div>
 </body>
 
 </html>

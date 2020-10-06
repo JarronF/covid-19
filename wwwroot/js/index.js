@@ -21,6 +21,9 @@ var multipleCountries = [];
 var colourList = [];
 
 $(document).ready(function () {
+    //TODO: Remove a selected country.    
+    //TODO: Maybe a limit to how many countries you can compare at once.
+
     //can be moved into a setupUI function if things get messy    
     fillColourList();
 
@@ -34,7 +37,12 @@ $(document).ready(function () {
         //    drawChart(multiCountry);
         //});
     });
-
+    $("#clear-graph").click(function(){
+        clearChart();
+    });
+    $("#remove-country").click(function(){
+        removeLastCountry();
+    });
     $("#selCountry1").change(function () {
         var countrySlug = $("#selCountry1").val();
         getCountryAllStatus(countrySlug, drawMultiCountryChart);
@@ -138,6 +146,14 @@ function drawMultiCountryChart(multiCountryStatus) {
             chart.update();
         });
     }
+}
+function clearChart(){
+    if (chart) chart.destroy();
+    multipleCountries = [];
+}
+function removeLastCountry(){
+    multipleCountries.pop();
+    drawMultiCountryChart(multipleCountries);
 }
 
 function getCountryAllStatus(countrySlug, callback) {

@@ -5,7 +5,7 @@
         "type": "chrome",
         "request": "launch",
         "name": "Launch Chrome",
-        "url": "file:///C:/Users/Jarron/Documents/Projects/COVID-19/wwwroot/index.html",
+        "url": "file:///C:/Users/Jarron Futter/source/repos/Covid-19/wwwroot/index.html",
         "webRoot": "${workspaceFolder}"
       },    
     ]
