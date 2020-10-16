@@ -2,7 +2,8 @@ const proxyurl = "https://cors-anywhere.herokuapp.com/"; //some apis do not retu
 const covidBaseUrl = "https://api.covid19api.com";
 const colourBaseUrl = "https://www.colourlovers.com/api";
 
-var chart;
+var chartTotalConfirmed;
+var chartDailyNewCases;
 var error = {
     errObj: null,
     message: "Unknown error occurred",
@@ -74,8 +75,8 @@ function fillColourList() {
 function drawChart(multiCountryStatus) {
     if (multiCountryStatus.length === 1) {
         var countryStatus = multiCountryStatus[0];
-        $("#txtCountry").text(countryStatus.name);
-        $("#txtConfirmedCount").text(countryStatus.latestCount);
+      //  $("#txtCountry").text(countryStatus.name);
+      //  $("#txtConfirmedCount").text(countryStatus.latestCount);
 
         var ctx = $("#chart1");
         //destroy any previous chart data before refilling
@@ -121,10 +122,41 @@ function drawChart(multiCountryStatus) {
 }
 
 function drawMultiCountryChart(multiCountryStatus) {
-    var ctx = $("#chart1");
+    $("#txtCountryCount").empty();      
+    var ctx = $("#chartTotalConfirmed");
     //destroy any previous chart data before refilling
-    if (chart) chart.destroy();
-    chart = new Chart(ctx, {
+    if (chartTotalConfirmed) chartTotalConfirmed.destroy();
+    if (multiCountryStatus.length > 0) {   
+    chartTotalConfirmed = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'line',
+        data: {
+            labels: multiCountryStatus[0].days,
+        },
+        // Configuration options go here
+        options: {
+
+        }
+    });   
+       
+        $.each(multiCountryStatus, function (key, item) {
+            updateCountryCountLabel(key, item);
+            chartTotalConfirmed.data.datasets.push({
+                label: item.name,
+                data: item.confirmed,
+                borderColor: colourList[key],
+            });
+            chartTotalConfirmed.update();
+        });
+        drawMultiCountryDailyCasesChart(multiCountryStatus);
+    }
+}
+
+function drawMultiCountryDailyCasesChart(multiCountryStatus) {
+    var ctx = $("#chartDailyNewCases");
+    //destroy any previous chart data before refilling
+    if (chartDailyNewCases) chartDailyNewCases.destroy();
+    chartDailyNewCases = new Chart(ctx, {
         // The type of chart we want to create
         type: 'line',
         data: {
@@ -136,19 +168,31 @@ function drawMultiCountryChart(multiCountryStatus) {
         }
     });
 
-    if (multiCountryStatus.length > 0) {
-        $.each(multiCountryStatus, function (key, item) {
-            chart.data.datasets.push({
+    if (multiCountryStatus.length > 0) {            
+        $.each(multiCountryStatus, function (key, item) {    
+            var daily = []; 
+            $.each(item.confirmed, function(ar, conf){
+                var result = parseInt(item.confirmed[ar] - item.confirmed[ar - 1] || 0);
+                daily.push(result);     
+            })
+            
+            chartDailyNewCases.data.datasets.push({
                 label: item.name,
-                data: item.confirmed,
+                data: daily,
                 borderColor: colourList[key],
             });
-            chart.update();
+            chartDailyNewCases.update();
         });
     }
 }
+
+function updateCountryCountLabel(key, country){
+    $("#txtCountryCount").append("<tr><td>"+ country.name + "</td><td>"+ country.latestCount + "</td></tr>");    
+}
+
 function clearChart(){
-    if (chart) chart.destroy();
+    if (chartTotalConfirmed) chartTotalConfirmed.destroy();
+    if (chartDailyNewCases) chartDailyNewCases.destroy();    
     multipleCountries = [];
 }
 function removeLastCountry(){
