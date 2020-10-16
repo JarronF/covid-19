@@ -18,13 +18,27 @@
     <div class="row">
     <h1>COVID-19 Graphs</h1> 
     </div>
+
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="totals-tab" data-toggle="tab" href="#totals" role="tab" aria-controls="totals" aria-selected="true">Totals</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="daily-tab" data-toggle="tab" href="#daily" role="tab" aria-controls="daily" aria-selected="false">Daily</a>
+      </li>      
+    </ul>
+<br/>
+    <div class="tab-content" id="tabbedContent">
+      
+      <div class="tab-pane fade show active" id="totals" role="tabpanel" aria-labelledby="totals-tab">
+        <h2>Total confirmed cases:</h2>
     <div class="row">
     <div class="col">
         <select id="selCountry1" class="selectBox form-control"></select>       
       </div>
       <div class="col">
-        <button type="button" class="btn btn-primary" id="clear-graph">Clear Graph</button>
-        <button type="button" class="btn btn-info" id="remove-country">Remove Last Country</button>
+        <button type="button" class="btn btn-primary btn-sm" id="clear-graph">Clear</button>
+        <button type="button" class="btn btn-info btn-sm" id="remove-country">Remove Last</button>
       </div>
       <div class="col">
         <h3><span id="txtCountry">Country</span> <span id="txtConfirmedCount">Count</span></h3>
@@ -33,6 +47,12 @@
     <div class="row"> 
         <canvas id="chart1"></canvas>
     </div>
+  </div>
+  <div class="tab-pane fade" id="daily" role="tabpanel" aria-labelledby="daily-tab">
+<h2>Daily infections:</h2>
+
+  </div>
+</div>
     <div class="modal" tabindex="-1" role="dialog" id="errorModal">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
