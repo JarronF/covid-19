@@ -2,74 +2,89 @@
 <html>
 
 <head>
-    <meta charset="UTF-8">
-    <title>COVID-19 Graphs</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/index.css">
+  <meta charset="UTF-8">
+  <title>COVID-19 Graphs</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/index.css">
   <!--  <link rel="stylesheet" href="css/site.css" /> -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
-    <script src="js/index.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+  <script src="js/index.js"></script>
 </head>
 
 <body>
   <div class="container-fluid">
     <div class="row">
-    <h1>COVID-19 Graphs</h1> 
+      <div class="col">
+        <h3>COVID-19 Graphs</h3>
+      </div>
     </div>
     <div class="row">
-    <div class="col">
-      <button type="button" class="btn btn-primary btn-sm" id="clear-graph">Clear</button>
-      <button type="button" class="btn btn-info btn-sm" id="remove-country">Remove Last</button>
-    </div>   
-  </div>
-  <br/>
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-      <li class="nav-item">
-        <a class="nav-link active" id="totals-tab" data-toggle="tab" href="#totals" role="tab" aria-controls="totals" aria-selected="true">Totals</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="daily-tab" data-toggle="tab" href="#daily" role="tab" aria-controls="daily" aria-selected="false">Daily</a>
-      </li>      
-    </ul>
-<br/>
-    <div class="tab-content" id="tabbedContent">
-      
-      <div class="tab-pane fade show active" id="totals" role="tabpanel" aria-labelledby="totals-tab">
-        <h2>Total confirmed cases:</h2>
-    <div class="row">
-    <div class="col">
-        <select id="selCountry1" class="selectBox form-control"></select>       
-      </div>
-      <div class="col">        
+      <div class="col-2">    
+        <h4>How to use this chart:</h4>
+        <ul>
+          <li>Compare different countries by selecting them from the list</li>
+          <li>Click the country label in the chart's legend at the top of the chart to remove it from the graph temporarily</li>
+          <li>Use the "Clear" and "Remove Last" buttons to manipulate the charts</li>
+          <li>View the "Totals" and "Daily" tabs to compare the combined total infections and the daily infection rate</li>
+        </ul>   
+        <button type="button" class="btn btn-primary btn-sm" id="clear-graph">Clear</button>
+        <button type="button" class="btn btn-info btn-sm" id="remove-country">Remove Last</button>
+        
+        <select id="selCountry1" class="selectBox form-control"></select>
+        
         <table class="table">
           <thead>
-          <tr>
-          <th>Country</th>
-          <th>Count</th>
-        </thead>
-        </tr>
-        <tbody id="txtCountryCount">
-
-        </tbody>
-        
+            <tr>
+              <th>Country</th>
+              <th>Count</th>
+          </thead>
+          </tr>
+          <tbody id="txtCountryCount">
+          </tbody>
         </table>
-      
-          
-      </div> 
-    </div>  
-    <div class="row"> 
-        <canvas id="chartTotalConfirmed"></canvas>
+
+      </div>
+      <div class="col">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="totals-tab" data-toggle="tab" href="#totals" role="tab"
+              aria-controls="totals" aria-selected="true">Totals</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="daily-tab" data-toggle="tab" href="#daily" role="tab" aria-controls="daily"
+              aria-selected="false">Daily</a>
+          </li>
+        </ul>
+        <br />
+        <div class="tab-content" id="tabbedContent">
+
+          <div class="tab-pane fade show active" id="totals" role="tabpanel" aria-labelledby="totals-tab">
+            <div class="row">
+              <div class="col">
+                <h2>Total confirmed cases:</h2>
+              </div>
+            </div>
+            <div class="row">
+              <canvas id="chartTotalConfirmed"></canvas>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="daily" role="tabpanel" aria-labelledby="daily-tab">
+            <h2>Daily infections:</h2>
+            <div id="dailyNewCases">
+              <canvas id="chartDailyNewCases"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div id="loading" class="load">
+          <img src="images/loader.gif" alt="Loading chart">
+          <p class="loadingText">Loading Chart...</p>
+        </div>
+
+      </div>
     </div>
-  </div>
-  <div class="tab-pane fade" id="daily" role="tabpanel" aria-labelledby="daily-tab">
-<h2>Daily infections:</h2>
-<div id="dailyNewCases">
-  <canvas id="chartDailyNewCases"></canvas>
-</div>
-  </div>
-</div>
     <div class="modal" tabindex="-1" role="dialog" id="errorModal">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -80,14 +95,14 @@
             </button>
           </div>
           <div class="modal-body">
-              <h6 id="error" style="color: red;">Error Text</h6>
+            <h6 id="error" style="color: red;">Error Text</h6>
           </div>
-          <div class="modal-footer">             
+          <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
-    </div>  
+    </div>
   </div>
 </body>
 

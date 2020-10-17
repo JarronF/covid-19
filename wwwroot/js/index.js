@@ -21,36 +21,33 @@ var virusStatus = {
 var multipleCountries = [];
 var colourList = [];
 
-$(document).ready(function () {
-    //TODO: Remove a selected country.    
+$(document).ready(function () { 
     //TODO: Maybe a limit to how many countries you can compare at once.
-
     //can be moved into a setupUI function if things get messy    
     fillColourList();
-
     getListAllCountries(function () {
-        fillCountrySelect($("#selCountry1"));
-        //Start by displaying South African data
-        getCountryAllStatus("south-africa", drawMultiCountryChart);
-
-        //Commented out because the api has implemented rate-limiting and you have to pay for access
-        //getCountryAllStatus("south-africa", function (multiCountry) {
-        //    drawChart(multiCountry);
-        //});
+        fillCountrySelect($("#selCountry1"));  
+        //set to start with South Africa and fire the change event
+        $("#selCountry1").val("south-africa").change();
+        
+    });
+    
+    $("#selCountry1").change(function () {
+        var countrySlug = $("#selCountry1").val();
+        if(countrySlug != null){
+            getCountryAllStatus(countrySlug, drawMultiCountryChart);
+        }
     });
     $("#clear-graph").click(function(){
         clearChart();
     });
     $("#remove-country").click(function(){
         removeLastCountry();
-    });
-    $("#selCountry1").change(function () {
-        var countrySlug = $("#selCountry1").val();
-        getCountryAllStatus(countrySlug, drawMultiCountryChart);
-    });
+    });    
+
 });
 
-function fillColourList() {
+function fillColourList() {    
     //Call a colour api to get back a list of colours to be used in the chart
     $.ajax({
         url: proxyurl + colourBaseUrl + "/colors?format=json",
@@ -61,7 +58,8 @@ function fillColourList() {
                 if(item.hex != "FFFFFF"){//don't add white as it's too difficult to see 
                     colourList.push("#" + item.hex);
                 }
-            });
+            });            
+            
         })
         .fail(function (err) {
             error.errObj = err;
@@ -72,52 +70,11 @@ function fillColourList() {
         });
 }
 
-function drawChart(multiCountryStatus) {
-    if (multiCountryStatus.length === 1) {
-        var countryStatus = multiCountryStatus[0];
-      //  $("#txtCountry").text(countryStatus.name);
-      //  $("#txtConfirmedCount").text(countryStatus.latestCount);
-
-        var ctx = $("#chart1");
-        //destroy any previous chart data before refilling
-        if (chart) chart.destroy();
-        chart = new Chart(ctx, {
-            // The type of chart we want to create
-            type: 'line',
-            // The data for our dataset
-            data: {
-                labels: countryStatus.days,
-                datasets: [
-                    {
-                        label: 'Confirmed',
-                        borderColor: 'rgb(255,140,0)',
-                        data: countryStatus.confirmed,
-                    },
-                    {
-                        label: 'Deaths',
-                        borderColor: 'rgb(255,0,0)',
-                        data: countryStatus.deaths,
-                    },
-                    {
-                        label: 'Recovered',
-                        borderColor: 'rgb(50,205,50)',
-                        data: countryStatus.recovered,
-                    },
-                    {
-                        label: 'Active',
-                        borderColor: 'rgb(0,0,255)',
-                        data: countryStatus.active,
-                    }
-                ]
-            },
-            // Configuration options go here
-            options: {
-
-            }
-        });
-    } else {
-        error.message = "Please use drawMultiCountryChart instead";
-        showError();
+function showLoading(status){
+    if(status){
+        $("#loading").removeClass("d-none");
+    }else{
+        $("#loading").addClass("d-none");
     }
 }
 
@@ -212,7 +169,7 @@ function getCountryAllStatus(countrySlug, callback) {
         active: [],
         days: []
     }
-
+    showLoading(true);
     $.getJSON(endPoint, function (response) {
         if (response.length !== 0) {
             var latest = response[response.length - 1];
@@ -236,6 +193,7 @@ function getCountryAllStatus(countrySlug, callback) {
         .done(function () {
             multipleCountries.push(country);
             callback(multipleCountries);
+            showLoading(false);
         })
         .fail(function (err) {
             error.errObj = err;
@@ -328,7 +286,7 @@ function fillCountrySelect(element) {
 }
 
 function showError() {
-    if (error.errObj !== null) {
+    if (error.errObj.responseJSON !== undefined) {
         var errText = (error.errObj.responseJSON.message === null) ? "No returned error" : error.errObj.responseJSON.message; 
         $("#error").html("Error Status: " + error.errObj.status + "<br/>" + errText);
     } else {

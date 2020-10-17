@@ -1,3 +1,14 @@
-.selectBox{
-    width: 30%;
+.selectBox{    
+    margin-top: 15px;
+}
+.table{
+    margin-top: 15px;
+}
+.load{
+    width: 300px;
+    margin: 0 auto;
+}
+.loadingText{
+    text-align: center;
+    margin-top: -80px;
 }
