@@ -94,21 +94,23 @@ function drawMultiCountryChart(multiCountryStatus) {
         options: {
 
         }
-    });   
-       
+    });
         $.each(multiCountryStatus, function (key, item) {
+            var colour = setInitialColour(key);
             updateCountryCountLabel(key, item);
             chartTotalConfirmed.data.datasets.push({
                 label: item.name,
                 data: item.confirmed,
-                borderColor: colourList[key],
+                borderColor: colour,
             });
             chartTotalConfirmed.update();
         });
         drawMultiCountryDailyCasesChart(multiCountryStatus);
     }
 }
-
+function setInitialColour(key){
+    return (colourList.length === 0) ? "#000000" : colourList[key];
+}
 function drawMultiCountryDailyCasesChart(multiCountryStatus) {
     var ctx = $("#chartDailyNewCases");
     //destroy any previous chart data before refilling
@@ -127,6 +129,7 @@ function drawMultiCountryDailyCasesChart(multiCountryStatus) {
 
     if (multiCountryStatus.length > 0) {            
         $.each(multiCountryStatus, function (key, item) {    
+            var colour = setInitialColour(key);
             var daily = []; 
             $.each(item.confirmed, function(ar, conf){
                 var result = parseInt(item.confirmed[ar] - item.confirmed[ar - 1] || 0);
@@ -136,7 +139,7 @@ function drawMultiCountryDailyCasesChart(multiCountryStatus) {
             chartDailyNewCases.data.datasets.push({
                 label: item.name,
                 data: daily,
-                borderColor: colourList[key],
+                borderColor: colour,
             });
             chartDailyNewCases.update();
         });
@@ -151,6 +154,7 @@ function clearChart(){
     if (chartTotalConfirmed) chartTotalConfirmed.destroy();
     if (chartDailyNewCases) chartDailyNewCases.destroy();    
     multipleCountries = [];
+    $("#txtCountryCount").empty();     
 }
 function removeLastCountry(){
     multipleCountries.pop();
