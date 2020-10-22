@@ -21,33 +21,33 @@ var virusStatus = {
 var multipleCountries = [];
 var colourList = [];
 
-$(document).ready(function () { 
+$(document).ready(function () {
     //TODO: Maybe a limit to how many countries you can compare at once.
     //can be moved into a setupUI function if things get messy    
     fillColourList();
     getListAllCountries(function () {
-        fillCountrySelect($("#selCountry1"));  
+        fillCountrySelect($("#selCountry1"));
         //set to start with South Africa and fire the change event
         $("#selCountry1").val("south-africa").change();
-        
+
     });
-    
+
     $("#selCountry1").change(function () {
         var countrySlug = $("#selCountry1").val();
-        if(countrySlug != null){
+        if (countrySlug != null) {
             getCountryAllStatus(countrySlug, drawMultiCountryChart);
         }
     });
-    $("#clear-graph").click(function(){
+    $("#clear-graph").click(function () {
         clearChart();
     });
-    $("#remove-country").click(function(){
+    $("#remove-country").click(function () {
         removeLastCountry();
-    });    
+    });
 
 });
 
-function fillColourList() {    
+function fillColourList() {
     //Call a colour api to get back a list of colours to be used in the chart
     $.ajax({
         url: proxyurl + colourBaseUrl + "/colors?format=json",
@@ -55,11 +55,11 @@ function fillColourList() {
     })
         .done(function (response) {
             $.each(response, function (key, item) {
-                if(item.hex != "FFFFFF"){//don't add white as it's too difficult to see 
+                if (item.hex != "FFFFFF") {//don't add white as it's too difficult to see 
                     colourList.push("#" + item.hex);
                 }
-            });            
-            
+            });
+
         })
         .fail(function (err) {
             error.errObj = err;
@@ -70,31 +70,31 @@ function fillColourList() {
         });
 }
 
-function showLoading(status){
-    if(status){
+function showLoading(status) {
+    if (status) {
         $("#loading").removeClass("d-none");
-    }else{
+    } else {
         $("#loading").addClass("d-none");
     }
 }
 
 function drawMultiCountryChart(multiCountryStatus) {
-    $("#txtCountryCount").empty();      
+    $("#txtCountryCount").empty();
     var ctx = $("#chartTotalConfirmed");
     //destroy any previous chart data before refilling
     if (chartTotalConfirmed) chartTotalConfirmed.destroy();
-    if (multiCountryStatus.length > 0) {   
-    chartTotalConfirmed = new Chart(ctx, {
-        // The type of chart we want to create
-        type: 'line',
-        data: {
-            labels: multiCountryStatus[0].days,
-        },
-        // Configuration options go here
-        options: {
+    if (multiCountryStatus.length > 0) {
+        chartTotalConfirmed = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
+            data: {
+                labels: multiCountryStatus[0].days,
+            },
+            // Configuration options go here
+            options: {
 
-        }
-    });
+            }
+        });
         $.each(multiCountryStatus, function (key, item) {
             var colour = setInitialColour(key);
             updateCountryCountLabel(key, item);
@@ -108,7 +108,7 @@ function drawMultiCountryChart(multiCountryStatus) {
         drawMultiCountryDailyCasesChart(multiCountryStatus);
     }
 }
-function setInitialColour(key){
+function setInitialColour(key) {
     return (colourList.length === 0) ? "#000000" : colourList[key];
 }
 function drawMultiCountryDailyCasesChart(multiCountryStatus) {
@@ -127,15 +127,15 @@ function drawMultiCountryDailyCasesChart(multiCountryStatus) {
         }
     });
 
-    if (multiCountryStatus.length > 0) {            
-        $.each(multiCountryStatus, function (key, item) {    
+    if (multiCountryStatus.length > 0) {
+        $.each(multiCountryStatus, function (key, item) {
             var colour = setInitialColour(key);
-            var daily = []; 
-            $.each(item.confirmed, function(ar, conf){
+            var daily = [];
+            $.each(item.confirmed, function (ar, conf) {
                 var result = parseInt(item.confirmed[ar] - item.confirmed[ar - 1] || 0);
-                daily.push(result);     
+                daily.push(result);
             })
-            
+
             chartDailyNewCases.data.datasets.push({
                 label: item.name,
                 data: daily,
@@ -146,17 +146,17 @@ function drawMultiCountryDailyCasesChart(multiCountryStatus) {
     }
 }
 
-function updateCountryCountLabel(key, country){
-    $("#txtCountryCount").append("<tr><td>"+ country.name + "</td><td>"+ country.latestCount + "</td></tr>");    
+function updateCountryCountLabel(key, country) {
+    $("#txtCountryCount").append("<tr><td>" + country.name + "</td><td>" + country.latestCount + "</td></tr>");
 }
 
-function clearChart(){
+function clearChart() {
     if (chartTotalConfirmed) chartTotalConfirmed.destroy();
-    if (chartDailyNewCases) chartDailyNewCases.destroy();    
+    if (chartDailyNewCases) chartDailyNewCases.destroy();
     multipleCountries = [];
-    $("#txtCountryCount").empty();     
+    $("#txtCountryCount").empty();
 }
-function removeLastCountry(){
+function removeLastCountry() {
     multipleCountries.pop();
     drawMultiCountryChart(multipleCountries);
 }
@@ -291,7 +291,7 @@ function fillCountrySelect(element) {
 
 function showError() {
     if (error.errObj.responseJSON !== undefined) {
-        var errText = (error.errObj.responseJSON.message === null) ? "No returned error" : error.errObj.responseJSON.message; 
+        var errText = (error.errObj.responseJSON.message === null) ? "No returned error" : error.errObj.responseJSON.message;
         $("#error").html("Error Status: " + error.errObj.status + "<br/>" + errText);
     } else {
         $("#error").html("Error: <br/>" + error.message);
