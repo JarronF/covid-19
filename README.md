@@ -1,4 +1,5 @@
 # covid-19
+View this project in action here: https://melonweb.co.za/covid/
 
 A simple set of graphs to track and compare total confirmed infections and daily infection rates of Covid-19 per country selected. 
 
